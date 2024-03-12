@@ -7,8 +7,8 @@ IPT="/sbin/iptables"
 # The network interface you will use
 # WAN is the one connected to the internet
 # LAN the one connected to your local network
-WAN="eth0"
-LAN="xenbr0"
+WAN="wlp2s0"
+LAN="enp1s0"
 # First we need to clear up any existing firewall rules
 # and chain which might have been created
 $IPT -F
@@ -90,7 +90,14 @@ $IPT -A INPUT -p icmp --icmp-type 11 -j ACCEPT
 $IPT -A INPUT -p icmp --icmp-type 8 -m limit --limit 1/second -j ACCEPT
 $IPT -A INPUT -p icmp -j Firewall
 # Accept ssh connections from the Internet
-$IPT -A INPUT -i $WAN -p tcp --dport 94 -j ACCEPT
+$IPT -A INPUT -i $LAN -p tcp --dport 1022 -j ACCEPT
+$IPT -A INPUT -i $LAN -p tcp --dport 1021 -j ACCEPT
+$IPT -A INPUT -i $LAN -p tcp --dport 7777 -j ACCEPT
+$IPT -A INPUT -i $LAN -p udp --dport 7777 -j ACCEPT
+$IPT -A INPUT -i $WAN -p tcp --dport 1022 -j ACCEPT
+$IPT -A INPUT -i $WAN -p tcp --dport 1021 -j ACCEPT
+$IPT -A INPUT -i $WAN -p tcp --dport 7777 -j ACCEPT
+$IPT -A INPUT -i $WAN -p udp --dport 7777 -j ACCEPT
 # or only accept from a certain ip
 #$IPT -A INPUT -i $WAN -s 125.124.123.122 -p tcp --dport 22 -j ACCEPT
 # Accept related and established connections
